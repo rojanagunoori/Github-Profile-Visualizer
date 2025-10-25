@@ -22,30 +22,17 @@ class Home extends Component {
     errorMsg: '',
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const {username} = this.context
-    if (username.trim() === '' && prevState.profileDetails.length > 0) {
-      this.setState({
-        profileDetails: [],
-        apiStatus: apiStatusConstants.initial,
-        errorMsg: '',
-      })
-    }
-  }
-
   getGitHubUserProfileDetails = async username => {
     this.setState({apiStatus: apiStatusConstants.inProgress})
-    const {REACT_APP_GITHUB_API_KEY} = process.env
 
-    const GitHubUserProfileUrl = `https://apis2.ccbp.in/gpv/profile-details/${username}?api_key=${REACT_APP_GITHUB_API_KEY}`
-
+    const apiKey = process.env.REACT_APP_GITHUB_API_KEY
+    const GitHubUserProfileUrl = `https://apis2.ccbp.in/gpv/profile-details/${username}?api_key=${apiKey}`
     const options = {method: 'GET'}
 
     try {
       const response = await fetch(GitHubUserProfileUrl, options)
       if (response.ok) {
         const data = await response.json()
-        console.log('Data ', data)
         const updatedData = {
           avatarUrl: data.avatar_url,
           bio: data.bio,
@@ -122,7 +109,6 @@ class Home extends Component {
 
   renderGithubDetailsOfProfile = () => {
     const {profileDetails} = this.state
-    console.log(profileDetails)
     const object = profileDetails[0]
     const {
       avatarUrl,
@@ -137,7 +123,6 @@ class Home extends Component {
       location,
       organizationsUrl,
     } = object
-    console.log(following)
 
     return (
       <div data-testid="repoItem" className="repo-item">
@@ -167,12 +152,10 @@ class Home extends Component {
           </div>
           <div className="bottom-container">
             <div className="company-container">
-              <p className="company-heading" data-testid="companyHeading">
-                Company
-              </p>
+              <p className="company-heading">Company</p>
               <div className="companyUrl">
                 <RiBuildingLine className="icon-style" />
-                <p className="company-value">{company || 'N/A'}</p>
+                <p className="company">{company}</p>
               </div>
             </div>
             <div className="company-container">
@@ -224,24 +207,6 @@ class Home extends Component {
 
   renderContent = () => {
     const {errorMsg, apiStatus, profileDetails} = this.state
-    const {username} = this.context
-
-    // Show home page if username is empty
-    if (username.trim() === '' && profileDetails.length === 0) {
-      console.log('🏠 Home page showing — username is empty')
-      return (
-        <div className="github-container">
-          <h1 className="heading">GitHub Profile Visualizer</h1>
-          <img
-            src="https://res.cloudinary.com/ddsn9feta/image/upload/v1718599647/Group_21x-mobileview_iyuarb.png"
-            alt="gitHub profile visualizer home page"
-            className="homeImage"
-            data-testid="homePageImage"
-          />
-        </div>
-      )
-    }
-
     if (errorMsg) {
       return (
         <>
@@ -255,11 +220,20 @@ class Home extends Component {
       return this.renderLoaderView()
     }
 
-    if (profileDetails.length > 0) {
-      return this.renderGithubDetailsOfProfile()
+    if (profileDetails.length === 0) {
+      return (
+        <div className="github-container">
+          <h1 className="heading">GitHub Profile Visualizer</h1>
+          <img
+            src="https://res.cloudinary.com/ddsn9feta/image/upload/v1718599647/Group_21x-mobileview_iyuarb.png"
+            alt="gitHub profile visualizer home page"
+            className="homeImage"
+          />
+        </div>
+      )
     }
 
-    return null
+    return this.renderGithubDetailsOfProfile()
   }
 
   render() {
