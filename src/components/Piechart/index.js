@@ -1,4 +1,10 @@
-import {PieChart, Pie, Legend, Cell, ResponsiveContainer} from 'recharts'
+import {
+  PieChart,
+  Pie,
+  Legend,
+  Cell,
+  // ResponsiveContainer
+} from 'recharts'
 
 const COLORS = [
   '#0088FE',
@@ -15,8 +21,10 @@ const Piechart = props => {
   const data = lezend.pieLanguages
 
   return (
-    <ResponsiveContainer width="80%" height={300}>
-      <PieChart>
+    <>
+      {/** <ResponsiveContainer width="80%" height={300}> */}
+
+      <PieChart width={400} height={400}>
         <Pie
           cx="50%"
           cy="50%"
@@ -41,7 +49,8 @@ const Piechart = props => {
           align="right"
         />
       </PieChart>
-    </ResponsiveContainer>
+      {/* </ResponsiveContainer> */}
+    </>
   )
 }
 export default Piechart

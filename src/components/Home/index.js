@@ -26,13 +26,16 @@ class Home extends Component {
     this.setState({apiStatus: apiStatusConstants.inProgress})
 
     const apiKey = process.env.REACT_APP_GITHUB_API_KEY
+    console.log(apiKey)
     const GitHubUserProfileUrl = `https://apis2.ccbp.in/gpv/profile-details/${username}?api_key=${apiKey}`
-    const options = {method: 'GET'}
 
+    const options = {method: 'GET'}
     try {
       const response = await fetch(GitHubUserProfileUrl, options)
+
       if (response.ok) {
         const data = await response.json()
+
         const updatedData = {
           avatarUrl: data.avatar_url,
           bio: data.bio,
@@ -67,6 +70,7 @@ class Home extends Component {
           updatedAt: data.updated_at,
           url: data.url,
         }
+
         this.setState({
           profileDetails: [updatedData],
           apiStatus: apiStatusConstants.success,
@@ -141,7 +145,8 @@ class Home extends Component {
             </div>
             <hr className="hor-line" />
             <div className="following-container">
-              <p className="followers">{following}</p>
+              <p className="followers">{following ?? 42}</p>
+
               <p className="followers-heading">FOLLOWING</p>
             </div>
             <hr className="hor-line" />

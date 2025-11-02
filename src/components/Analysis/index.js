@@ -40,10 +40,13 @@ class Analysis extends Component {
   getGitHubUserAnalysisDetails = async () => {
     const {username} = this.props
     const {REACT_APP_GITHUB_API_KEY} = process.env
+    // const REACT_APP_GITHUB_API_KEY = process.env.REACT_APP_GITHUB_API_KEY
 
     this.setState({apiStatus: apiStatusConstants.inProgress})
 
     const url = `https://apis2.ccbp.in/gpv/profile-summary/${username}?api_key=${REACT_APP_GITHUB_API_KEY}`
+
+    console.log('url ', url)
     const options = {
       method: 'GET',
     }
@@ -53,7 +56,11 @@ class Analysis extends Component {
     if (response.ok === true) {
       const data = await response.json()
 
-      const updatedData = data
+      const updatedData = {
+        ...data,
+        avatarUrl: data.avatar_url,
+        login: data.login,
+      }
 
       this.setState({
         analysisList: updatedData,
@@ -66,17 +73,19 @@ class Analysis extends Component {
 
   renderAnalysisSuccessView = () => {
     const {analysisList} = this.state
+    console.log('analysisList ', analysisList)
 
     const analysisListLength = Object.keys(analysisList)?.length === 0
 
     const {
       user,
-      quarterCommitCount,
-      langRepoCount,
-      langCommitCount,
-      repoCommitCount,
-      repoCommitCountDescriptions,
+      quarterCommitCount = {},
+      langRepoCount = {},
+      langCommitCount = {},
+      repoCommitCount = {},
+      repoCommitCountDescriptions = {},
     } = analysisList
+
     const {avatarUrl, login} = user
 
     const repoCommitDescriptionKeys = Object.keys(repoCommitCountDescriptions)
@@ -122,7 +131,6 @@ class Analysis extends Component {
       repoCommitData.push({name: keyName, value: repoCommitCount[keyName]})
     })
     const slicedData = repoCommitData.sort(this.descendingSort).slice(0, 10)
-    // console.log(analysisListLength, analysisListLength.length)
 
     return (
       <div className="AnalysisSuccessViewContainer">

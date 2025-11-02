@@ -1,4 +1,9 @@
-import {PieChart, Pie, Legend, Cell, ResponsiveContainer} from 'recharts'
+import {
+  PieChart,
+  Pie,
+  Legend,
+  Cell, // ResponsiveContainer
+} from 'recharts'
 
 const COLORS = [
   'Orange',
@@ -13,36 +18,37 @@ const COLORS = [
 const LanguageCommitCountPie = props => {
   const {langCommitCount} = props
   const data = langCommitCount
+  console.log(data)
 
   return (
     <div className="language-commit-pie-container">
-      <ResponsiveContainer width="100%" height={200}>
-        <PieChart>
-          <Pie
-            cx="50%"
-            cy="50%"
-            data={data}
-            startAngle={0}
-            endAngle={360}
-            innerRadius="40%"
-            outerRadius="70%"
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={data.name + data.value}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Legend
-            iconType="square"
-            layout="vertical"
-            verticalAlign="middle"
-            align="right"
-          />
-        </PieChart>
-      </ResponsiveContainer>
+      {/*  <ResponsiveContainer width="100%" height={200 */}
+      <PieChart width={400} height={400}>
+        <Pie
+          cx="50%"
+          cy="50%"
+          data={data}
+          startAngle={0}
+          endAngle={360}
+          innerRadius="40%"
+          outerRadius="70%"
+          dataKey="value"
+        >
+          {data.map((entry, index) => (
+            <Cell
+              key={data.name + data.value}
+              fill={COLORS[index % COLORS.length]}
+            />
+          ))}
+        </Pie>
+        <Legend
+          iconType="square"
+          layout="vertical"
+          verticalAlign="middle"
+          align="right"
+        />
+      </PieChart>
+      {/* </ResponsiveContainer> */}
       {/* Add language names as plain HTML for tests */}
       <ul className="language-names-list">
         {data.map(each => (
